@@ -154,4 +154,44 @@ Theorem lower_grade_F_Minus :
   lower_grade (Grade F Minus) = (Grade F Minus).
   Proof. simpl. reflexivity. Qed.
 
+Theorem plus_to_nat :
+  forall (l : letter) (m : modifier),
+    m = Plus -> lower_grade (Grade l m) = (Grade l Natural).
+  Proof. intros l m. intros H. rewrite H. destruct l.
+   - reflexivity.
+   - reflexivity.
+   - reflexivity.
+   - reflexivity.
+   - reflexivity.
+   Qed.
+
+Theorem nat_to_minus :
+  forall (l : letter) (m : modifier),
+    m = Natural -> lower_grade (Grade l m) = (Grade l Minus).
+  Proof. intros l m. intros H. rewrite H. destruct l.
+   - reflexivity.
+   - reflexivity.
+   - reflexivity.
+   - reflexivity.
+   - reflexivity.
+   Qed.
+
+Theorem lower_grade_lowers :
+  forall (g : grade),
+    grade_comp (Grade F Minus) g = Lt ->
+    grade_comp (lower_grade g) g = Lt.
+Proof.
+  intros g H.
+  destruct g as [l m] eqn:Eqg.
+  destruct m eqn:Eqm.
+  - rewrite plus_to_nat. simpl. rewrite letter_comp_eq. reflexivity. reflexivity.
+  - rewrite nat_to_minus. simpl. rewrite letter_comp_eq. reflexivity. reflexivity.
+  - destruct l eqn:Eql.
+    + simpl lower_grade. simpl grade_comp. reflexivity.
+    + simpl lower_grade. simpl grade_comp. reflexivity.
+    + simpl lower_grade. simpl grade_comp. reflexivity.
+    + simpl lower_grade. simpl grade_comp. reflexivity.
+    + rewrite lower_grade_F_Minus. rewrite H. reflexivity.
+  Qed.
+
 End LateDays.
