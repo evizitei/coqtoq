@@ -126,6 +126,7 @@ Definition lower_grade (g : grade) : grade :=
   match g with
     | Grade l Plus => (Grade l Natural)
     | Grade l Natural => (Grade l Minus)
+    | Grade F Minus => (Grade F Minus)
     | Grade l Minus => (Grade (lower_letter l) Plus)
   end.
 
@@ -149,5 +150,8 @@ Example lower_grade_thrice :
   lower_grade (lower_grade (lower_grade (Grade B Minus))) = (Grade C Minus).
   Proof. reflexivity. Qed.
 
+Theorem lower_grade_F_Minus :
+  lower_grade (Grade F Minus) = (Grade F Minus).
+  Proof. simpl. reflexivity. Qed.
 
 End LateDays.
