@@ -67,4 +67,36 @@ Proof.
   - simpl. reflexivity.
 Qed.
 
+Definition mod_comp (m1 m2 : modifier) : comparison :=
+  match m1, m2 with
+    | Plus, Plus => Eq
+    | Plus, _ => Gt
+    | Natural, Plus => Lt
+    | Natural, Natural => Eq
+    | Natural, Minus => Gt
+    | Minus, Minus => Eq
+    | Minus, _ => Lt
+  end.
+  
+Definition grade_comp (g1 g2 : grade) : comparison :=
+  match g1, g2 with
+    | Grade l1 m1, Grade l2 m2 =>
+      let lc := letter_comp l1 l2 in
+      match lc with
+        | Eq => mod_comp m1 m2
+        | _ => lc
+      end
+  end.
+
+  Example test_grade_comp1 :
+    grade_comp (Grade A Minus) (Grade B Plus) = Gt.
+  Proof. reflexivity. Qed.
+
+  Example test_grade_comp2 :
+    grade_comp (Grade A Minus) (Grade A Plus) = Lt.
+  Proof. reflexivity. Qed.
+
+  Example test_grade_comp3 :
+    grade_comp (Grade F Plus) (Grade F Plus) = Eq.
+  Proof. reflexivity. Qed.
 End LateDays.
