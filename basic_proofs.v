@@ -99,4 +99,26 @@ Definition grade_comp (g1 g2 : grade) : comparison :=
   Example test_grade_comp3 :
     grade_comp (Grade F Plus) (Grade F Plus) = Eq.
   Proof. reflexivity. Qed.
+
+  Definition lower_letter (l : letter) : letter :=
+    match l with
+      | A => B
+      | B => C
+      | C => D
+      | D => F
+      | F => F
+    end.
+    
+  Theorem lower_letter_lowers :
+    forall (l : letter),
+      letter_comp F l = Lt ->
+      letter_comp (lower_letter l) l = Lt.
+  Proof.
+    intros l H. destruct l eqn:El.
+    - reflexivity.
+    - reflexivity.
+    - reflexivity.
+    - reflexivity.
+    - simpl. rewrite <- H. reflexivity.
+  Qed.
 End LateDays.
