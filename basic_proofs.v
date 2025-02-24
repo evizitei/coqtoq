@@ -88,37 +88,66 @@ Definition grade_comp (g1 g2 : grade) : comparison :=
       end
   end.
 
-  Example test_grade_comp1 :
-    grade_comp (Grade A Minus) (Grade B Plus) = Gt.
-  Proof. reflexivity. Qed.
+Example test_grade_comp1 :
+  grade_comp (Grade A Minus) (Grade B Plus) = Gt.
+Proof. reflexivity. Qed.
 
-  Example test_grade_comp2 :
-    grade_comp (Grade A Minus) (Grade A Plus) = Lt.
-  Proof. reflexivity. Qed.
+Example test_grade_comp2 :
+  grade_comp (Grade A Minus) (Grade A Plus) = Lt.
+Proof. reflexivity. Qed.
 
-  Example test_grade_comp3 :
-    grade_comp (Grade F Plus) (Grade F Plus) = Eq.
-  Proof. reflexivity. Qed.
+Example test_grade_comp3 :
+  grade_comp (Grade F Plus) (Grade F Plus) = Eq.
+Proof. reflexivity. Qed.
 
-  Definition lower_letter (l : letter) : letter :=
-    match l with
-      | A => B
-      | B => C
-      | C => D
-      | D => F
-      | F => F
-    end.
-    
-  Theorem lower_letter_lowers :
+Definition lower_letter (l : letter) : letter :=
+match l with
+    | A => B
+    | B => C
+    | C => D
+    | D => F
+    | F => F
+end.
+
+Theorem lower_letter_lowers :
     forall (l : letter),
-      letter_comp F l = Lt ->
-      letter_comp (lower_letter l) l = Lt.
-  Proof.
-    intros l H. destruct l eqn:El.
-    - reflexivity.
-    - reflexivity.
-    - reflexivity.
-    - reflexivity.
-    - simpl. rewrite <- H. reflexivity.
-  Qed.
+        letter_comp F l = Lt ->
+        letter_comp (lower_letter l) l = Lt.
+    Proof.
+        intros l H. destruct l eqn:El.
+        - reflexivity.
+        - reflexivity.
+        - reflexivity.
+        - reflexivity.
+        - simpl. rewrite <- H. reflexivity.
+    Qed.
+
+Definition lower_grade (g : grade) : grade :=
+  match g with
+    | Grade l Plus => (Grade l Natural)
+    | Grade l Natural => (Grade l Minus)
+    | Grade l Minus => (Grade (lower_letter l) Plus)
+  end.
+
+Example lower_grade_A_Plus :
+  lower_grade (Grade A Plus) = (Grade A Natural).
+  Proof. reflexivity. Qed.
+
+Example lower_grade_A_Natural :
+  lower_grade (Grade A Natural) = (Grade A Minus).
+  Proof. reflexivity. Qed.
+
+Example lower_grade_A_Minus :
+  lower_grade (Grade A Minus) = (Grade B Plus).
+  Proof. reflexivity. Qed.
+  
+Example lower_grade_F_Natural :
+  lower_grade (Grade F Natural) = (Grade F Minus).
+  Proof. reflexivity. Qed.
+
+Example lower_grade_thrice :
+  lower_grade (lower_grade (lower_grade (Grade B Minus))) = (Grade C Minus).
+  Proof. reflexivity. Qed.
+
+
 End LateDays.
