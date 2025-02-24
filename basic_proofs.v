@@ -1,3 +1,5 @@
+
+
 Theorem identity_fn_applied_twice : 
   forall (f : bool -> bool),
     (forall (x : bool), f x = x) ->
@@ -17,6 +19,7 @@ Qed.
 
 
 
+
 Theorem andb_eq_orb :
   forall (b c : bool),
     (andb b c = orb b c) -> b = c.
@@ -24,6 +27,39 @@ Proof. intros b c H. destruct b.
   - simpl in H. rewrite H. reflexivity.
   - simpl in H. rewrite H. reflexivity.
 Qed.
+
+Fixpoint eqb (n m : nat) : bool :=
+  match n with
+    | O => match m with
+      | O => true
+      | S m' => false
+      end
+    | S n' => match m with
+      | O => false
+      | S m' => eqb n' m'
+      end
+  end.
+
+Fixpoint leb (n m : nat) : bool :=
+  match n with
+  | O => true
+  | S n' =>
+      match m with
+      | O => false
+      | S m' => leb n' m'
+      end
+  end.
+
+Notation "x =? y" := (eqb x y) (at level 70) : nat_scope.
+Notation "x <=? y" := (leb x y) (at level 70) : nat_scope.
+
+Definition ltb (n m : nat) : bool :=
+  leb (S n) m.
+
+Notation "x <? y" := (ltb x y) (at level 70) : nat_scope.
+
+
+
 
 Module LateDays.
 
@@ -194,4 +230,18 @@ Proof.
     + rewrite lower_grade_F_Minus. rewrite H. reflexivity.
   Qed.
 
+Definition apply_late_policy (late_days : nat) ( g : grade) : grade :=
+  if late_days <? 9 then g
+  else if late_days <? 17 then lower_grade g
+  else if late_days <? 21 then lower_grade (lower_grade g)
+  else lower_grade (lower_grade (lower_grade g)).
+
+Theorem apply_late_policy_unfold : 
+  forall (late_days : nat) (g : grade),
+    apply_late_policy late_days g =
+      if late_days <? 9 then g
+      else if late_days <? 17 then lower_grade g
+      else if late_days <? 21 then lower_grade (lower_grade g)
+      else lower_grade (lower_grade (lower_grade g)).
+  Proof. intros. reflexivity. Qed.
 End LateDays.
